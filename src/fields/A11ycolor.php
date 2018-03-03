@@ -45,6 +45,16 @@ class A11ycolor extends Field
      */
     public $someAttribute = 'Some Default';
 
+    /**
+     * @var string|null The default color hex
+     */
+    public $defaultColor;
+
+    /**
+     * @var string|null The color hex used for calculating contrast ratio
+     */
+    public $contrastColor;
+
     // Static Methods
     // =========================================================================
 
@@ -55,7 +65,7 @@ class A11ycolor extends Field
      */
     public static function displayName(): string
     {
-        return Craft::t('a11y-color-fieldtype', 'A11ycolor');
+        return Craft::t('a11y-color-fieldtype', 'A11y Color');
     }
 
     // Public Methods
@@ -227,11 +237,33 @@ class A11ycolor extends Field
      */
     public function getSettingsHtml()
     {
-        // Render the settings template
+        $contrastColorField = Craft::$app->getView()->renderTemplateMacro('_includes/forms.html', 'colorField', [
+            [
+                'label' => Craft::t('app', 'Contrast Color'),
+                'id' => 'contrast-color',
+                'name' => 'contrastColor',
+                'value' => $this->contrastColor,
+                'instructions' => 'This is the color that will be used to calculate the contrast ratio. If the color being chosen in this field is used as a **text** color, input the background color here. Alternatively, if the color being chosen in this field is a **background** color, input the text color here.',
+                'errors' => $this->getErrors('contrastColor'),
+            ]
+        ]);
+
+        $defaultColorField = Craft::$app->getView()->renderTemplateMacro('_includes/forms.html', 'colorField', [
+            [
+                'label' => Craft::t('app', 'Default Color'),
+                'id' => 'default-color',
+                'name' => 'defaultColor',
+                'value' => $this->defaultColor,
+                'errors' => $this->getErrors('defaultColor'),
+            ]
+        ]);
+
         return Craft::$app->getView()->renderTemplate(
             'a11y-color-fieldtype/_components/fields/A11ycolor_settings',
             [
                 'field' => $this,
+                'contrastColorField' => $contrastColorField,
+                'defaultColorField' => $defaultColorField,
             ]
         );
     }

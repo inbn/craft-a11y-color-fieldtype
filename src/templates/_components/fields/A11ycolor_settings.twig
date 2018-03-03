@@ -15,12 +15,7 @@
 
 {% import "_includes/forms" as forms %}
 
-{% do view.registerAssetBundle("inbn\\a11ycolorfieldtype\\assetbundles\\a11ycolorfieldtype\\A11yColorFieldtypeAsset") %}
+{% do view.registerAssetBundle("inbn\\a11ycolorfieldtype\\assetbundles\\a11ycolorfield\\A11ycolorFieldAsset") %}
 
-{{ forms.textField({
-    label: 'Some Attribute',
-    instructions: 'Enter some attribute here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: field['someAttribute']})
-}}
+{{ contrastColorField | raw }}
+{{ defaultColorField | raw }}
