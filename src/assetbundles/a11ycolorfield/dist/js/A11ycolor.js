@@ -12,7 +12,7 @@
 
  ;(function ( $, window, document, undefined ) {
 
-    var pluginName = "A11yColorFieldtypeA11ycolor",
+    var pluginName = "A11yColorField",
         defaults = {
         };
 

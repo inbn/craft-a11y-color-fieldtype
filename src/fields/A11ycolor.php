@@ -16,7 +16,9 @@ use inbn\a11ycolorfieldtype\assetbundles\a11ycolorfield\A11ycolorFieldAsset;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\fields\data\ColorData;
 use craft\helpers\Db;
+use craft\validators\ColorValidator;
 use yii\db\Schema;
 use craft\helpers\Json;
 
@@ -84,10 +86,8 @@ class A11ycolor extends Field
     public function rules()
     {
         $rules = parent::rules();
-        $rules = array_merge($rules, [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
-        ]);
+        $rules[] = [['contrastColor'], ColorValidator::class];
+        $rules[] = [['defaultColor'], ColorValidator::class];
         return $rules;
     }
 
@@ -122,7 +122,30 @@ class A11ycolor extends Field
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        return $value;
+        if ($value instanceof ColorData) {
+            return $value;
+        }
+
+        // If this is a new entry, look for any default options
+        if ($value === null && $this->isFresh($element) && $this->defaultColor) {
+            $value = $this->defaultColor;
+        }
+
+        if (!$value || $value === '#') {
+            return null;
+        }
+
+        $value = strtolower($value);
+
+        if ($value[0] !== '#') {
+            $value = '#'.$value;
+        }
+
+        if (strlen($value) === 4) {
+            $value = '#'.$value[1].$value[1].$value[2].$value[2].$value[3].$value[3];
+        }
+
+        return new ColorData($value);
     }
 
     /**
@@ -243,7 +266,7 @@ class A11ycolor extends Field
                 'id' => 'contrast-color',
                 'name' => 'contrastColor',
                 'value' => $this->contrastColor,
-                'instructions' => 'This is the color that will be used to calculate the contrast ratio. If the color being chosen in this field is used as a **text** color, input the background color here. Alternatively, if the color being chosen in this field is a **background** color, input the text color here.',
+                'instructions' => 'This is the color that will be used to calculate the contrast ratio.<br />If the color being chosen in this field is used as a **text** color, input the background color here.<br />Alternatively, if the color being chosen in this field is a **background** color, input the text color here.',
                 'errors' => $this->getErrors('contrastColor'),
             ]
         ]);
@@ -380,20 +403,18 @@ class A11ycolor extends Field
             'name' => $this->handle,
             'namespace' => $namespacedId,
             'prefix' => Craft::$app->getView()->namespaceInputId(''),
-            ];
+            'contrastColor' => $this->contrastColor,
+        ];
+
         $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').A11yColorFieldtypeA11ycolor(" . $jsonVars . ");");
+        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').A11yColorField(" . $jsonVars . ");");
 
         // Render the input template
-        return Craft::$app->getView()->renderTemplate(
-            'a11y-color-fieldtype/_components/fields/A11ycolor_input',
-            [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'id' => $id,
-                'namespacedId' => $namespacedId,
-            ]
-        );
+        return Craft::$app->getView()->renderTemplate('_includes/forms/color', [
+            'id' => Craft::$app->getView()->formatInputId($this->handle),
+            'name' => $this->handle,
+            'value' => $value ? $value->getHex() : null,
+            'namespacedId' => $namespacedId,
+        ]);
     }
 }
