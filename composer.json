@@ -1,0 +1,40 @@
+{
+    "name": "inbn/a11y-color-fieldtype",
+    "description": "A color field which gives WCAG 2.0 color contrast ratios",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "a11y color fieldtype"
+    ],
+    "support": {
+        "docs": "https://github.com/inbn/a11y-color-fieldtype/blob/master/README.md",
+        "issues": "https://github.com/inbn/a11y-color-fieldtype/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Iain Bean",
+            "homepage": "https://iainbean.com"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "inbn\\a11ycolorfieldtype\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "A11y color fieldtype",
+        "handle": "a11y-color-fieldtype",
+        "hasCpSettings": false,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/inbn/a11y-color-fieldtype/master/CHANGELOG.md",
+        "class": "inbn\\a11ycolorfieldtype\\A11yColorFieldtype"
+    }
+}
