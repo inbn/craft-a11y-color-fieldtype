@@ -17,5 +17,22 @@
 
 {% do view.registerAssetBundle("inbn\\a11ycolorfieldtype\\assetbundles\\a11ycolorfield\\A11ycolorFieldAsset") %}
 
+{# @TODO This should really be a legend with a fieldset inside it, but will need styling #}
+<div class="field">
+    <div class="heading">
+        <label>Will this field’s value be used as a text or background color?</label>
+    </div>
+    {{ textOrBackgroundField | raw }}
+</div>
+
 {{ contrastColorField | raw }}
+
+<div class="field">
+    <div class="heading">
+        <label>Font size</label>
+        <div class="instructions">The smallest size in <strong>pixels</strong> that the text will be displayed</div>
+    </div>
+    {{ fontSizeField | raw }}
+</div>
+
 {{ defaultColorField | raw }}

@@ -41,11 +41,9 @@ class A11ycolor extends Field
     // =========================================================================
 
     /**
-     * Some attribute
-     *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    public $textOrBackground = 'text';
 
     /**
      * @var string|null The default color hex
@@ -56,6 +54,11 @@ class A11ycolor extends Field
      * @var string|null The color hex used for calculating contrast ratio
      */
     public $contrastColor;
+
+        /**
+     * @var int The font size of the text
+     */
+    public $fontSize = 'small';
 
     // Static Methods
     // =========================================================================
@@ -260,7 +263,20 @@ class A11ycolor extends Field
      */
     public function getSettingsHtml()
     {
-        $contrastColorField = Craft::$app->getView()->renderTemplateMacro('_includes/forms.html', 'colorField', [
+        $textOrBackgroundField = Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'radioGroup', [
+            [
+                'label' => Craft::t('app', 'Will this field’s value be used as a text or background color?'),
+                'id' => 'text-or-background',
+                'name' => 'textOrBackground',
+                'value' => $this->textOrBackground,
+                'options' => [
+                    'text' => Craft::t('app', 'Text color'),
+                    'background' => Craft::t('app', 'Background color'),
+                ]
+            ]
+        ]);
+
+        $contrastColorField = Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'colorField', [
             [
                 'label' => Craft::t('app', 'Contrast Color'),
                 'id' => 'contrast-color',
@@ -271,7 +287,22 @@ class A11ycolor extends Field
             ]
         ]);
 
-        $defaultColorField = Craft::$app->getView()->renderTemplateMacro('_includes/forms.html', 'colorField', [
+        $fontSizeField = Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'radioGroup', [
+            [
+                'type' => 'number',
+                'label' => Craft::t('app', 'Font size (px)'),
+                'id' => 'font-size',
+                'name' => 'fontSize',
+                'value' => $this->fontSize,
+                'instructions' => 'The smallest size in **pixels** that the text will be displayed',
+                'options' => [
+                    'small' => Craft::t('app', 'Small (<24px or bold and <18.66px)'),
+                    'large' => Craft::t('app', 'Large (≥24px or bold and ≥18.66px)'),
+                ]
+            ]
+        ]);
+
+        $defaultColorField = Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'colorField', [
             [
                 'label' => Craft::t('app', 'Default Color'),
                 'id' => 'default-color',
@@ -285,7 +316,9 @@ class A11ycolor extends Field
             'a11y-color-fieldtype/_components/fields/A11ycolor_settings',
             [
                 'field' => $this,
+                'textOrBackgroundField' => $textOrBackgroundField,
                 'contrastColorField' => $contrastColorField,
+                'fontSizeField' => $fontSizeField,
                 'defaultColorField' => $defaultColorField,
             ]
         );
@@ -409,7 +442,7 @@ class A11ycolor extends Field
         $jsonVars = Json::encode($jsonVars);
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').A11yColorField(" . $jsonVars . ");");
 
-        // Render the input template
+        // Render a standard color input template
         return Craft::$app->getView()->renderTemplate('_includes/forms/color', [
             'id' => Craft::$app->getView()->formatInputId($this->handle),
             'name' => $this->handle,

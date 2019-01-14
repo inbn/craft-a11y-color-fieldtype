@@ -8,10 +8,9 @@
   },
   "author": "",
   "license": "ISC",
-  "repository" :
-  {
-    "type" : "git",
-    "url" : "https://github.com/inbn/craft-a11y-color-fieldtype.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/inbn/craft-a11y-color-fieldtype.git"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
