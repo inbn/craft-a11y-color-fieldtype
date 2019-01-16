@@ -41,7 +41,9 @@ var ColorContrastChecker = require('color-contrast-checker');
           '[name="fields[' + _this.options.id + ']"]'
         );
 
-        // Add event listener for input events on inputs
+        // Add event listener for input events on any input in the container:
+        // This is either the <input type="color"> or the <input type="text">
+        // next to it
         $colorFieldContainer.on(
           'input',
           'input',
@@ -50,9 +52,9 @@ var ColorContrastChecker = require('color-contrast-checker');
       });
     },
 
-    updateColorContrast: function() {
+    updateColorContrast: function(event) {
       var contrastColor = this.options.contrastColor;
-      var fieldColor = this.$colorField[0].value;
+      var fieldColor = event.currentTarget.value;
       var fontSize = this.options.fontSize === 'large' ? 22 : 14;
 
       // Check if this is a valid 3 or 6 character hex code

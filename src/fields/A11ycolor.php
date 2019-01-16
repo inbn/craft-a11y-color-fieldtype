@@ -437,6 +437,8 @@ class A11ycolor extends Field
             'namespace' => $namespacedId,
             'prefix' => Craft::$app->getView()->namespaceInputId(''),
             'contrastColor' => $this->contrastColor,
+            'fontSize' => $this->fontSize,
+            'textOrBackground' => $this->textOrBackground,
         ];
 
         $jsonVars = Json::encode($jsonVars);
